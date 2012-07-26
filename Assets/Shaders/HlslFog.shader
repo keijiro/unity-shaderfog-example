@@ -27,7 +27,7 @@ Shader "Custom/HlslFog" {
 			struct v2f {
 				float4 pos : SV_POSITION;
 				float4 uv : TEXCOORD0;
-				float4 fog : COLOR1;
+				float fog : TEXCOORD1;
 			};
 			
 			v2f vert(appdata v) {
@@ -35,12 +35,12 @@ Shader "Custom/HlslFog" {
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.texcoord;
 				float fogz = mul(UNITY_MATRIX_MV, v.vertex).z;
-				o.fog.x = saturate((fogz + _FogStart) / (_FogStart - _FogEnd));
+				o.fog = saturate((fogz + _FogStart) / (_FogStart - _FogEnd));
 				return o;
 			}
 			
 			half4 frag(v2f i) : COLOR {
-				return lerp(tex2D(_MainTex, i.uv.xy), _FogColor, i.fog.x);
+				return lerp(tex2D(_MainTex, i.uv.xy), _FogColor, i.fog);
 			}
 			
 			ENDCG
